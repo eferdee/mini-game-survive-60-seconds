@@ -11,4 +11,4 @@ export const firebaseConfig = {
 };
 
 // Nama koleksi Firestore tempat skor disimpan. Bebas diganti.
-export const LEADERBOARD_COLLECTION = "dodge60_leaderboard";
+export const LEADERBOARD_COLLECTION = "leaderboard";
