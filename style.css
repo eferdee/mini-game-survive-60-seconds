@@ -269,6 +269,16 @@ canvas{
   margin: 0 0 10px;
 }
 
+.entry-status{
+  font-size: 11px;
+  color: var(--ink-dim);
+  min-height: 14px;
+  margin: 8px 0 0;
+}
+.entry-status.error{
+  color: var(--magenta);
+}
+
 .name-input{
   width: 100%;
   font-family: var(--font-mono);

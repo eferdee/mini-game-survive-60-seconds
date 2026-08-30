@@ -1,9 +1,19 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig, LEADERBOARD_COLLECTION } from "./firebase-config.js";
+
 (() => {
   "use strict";
 
   const GAME_LENGTH = 60;        // seconds to survive
-  const STORAGE_KEY = "dodge60_leaderboard_v1";
+  const PERSONAL_BEST_KEY = "dodge60_personal_best";
   const MAX_ENTRIES = 10;
+
+  const firebaseApp = initializeApp(firebaseConfig);
+  const db = getFirestore(firebaseApp);
+  const leaderboardCol = collection(db, LEADERBOARD_COLLECTION);
 
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
@@ -24,6 +34,7 @@
   const finalSub = document.getElementById("finalSub");
   const entryForm = document.getElementById("entryForm");
   const nameInput = document.getElementById("nameInput");
+  const entryStatus = document.getElementById("entryStatus");
   const boardList = document.getElementById("boardList");
 
   document.getElementById("btnStart").addEventListener("click", startGame);
@@ -31,6 +42,7 @@
   document.getElementById("btnShowBoard").addEventListener("click", () => openBoard(screenStart));
   document.getElementById("btnOverBoard").addEventListener("click", () => openBoard(screenOver));
   document.getElementById("btnBoardBack").addEventListener("click", closeBoard);
+  document.getElementById("btnBoardRefresh").addEventListener("click", renderBoard);
   document.getElementById("btnSaveScore").addEventListener("click", saveScore);
   nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") saveScore(); });
 
@@ -249,7 +261,7 @@
     const frac = remaining / GAME_LENGTH;
     timerRing.style.strokeDashoffset = String(RING_CIRC * (1 - frac));
     timerRing.style.stroke = frac < 0.2 ? "#ff3d81" : (frac < 0.5 ? "#ffc857" : "#4cf3ff");
-    bestValEl.textContent = getBest();
+    bestValEl.textContent = getPersonalBest();
   }
 
   function endGame(survived) {
@@ -263,73 +275,79 @@
     finalScore.textContent = finalScoreVal;
     finalSub.textContent = `Waktu bertahan: ${elapsed.toFixed(1)}s  ·  Graze: ${grazeCount}`;
 
-    const board = getBoard();
-    const qualifies = board.length < MAX_ENTRIES || finalScoreVal > board[board.length - 1].score;
+    nameInput.value = "";
+    entryStatus.textContent = "";
+    entryForm.classList.remove("hidden");
+    entryForm.dataset.pendingScore = finalScoreVal;
+    entryForm.dataset.pendingSurvived = survived ? "1" : "0";
+    entryForm.dataset.pendingTime = elapsed.toFixed(1);
 
-    entryForm.classList.toggle("hidden", !qualifies);
-    if (qualifies) {
-      nameInput.value = "";
-      entryForm.dataset.pendingScore = finalScoreVal;
-      entryForm.dataset.pendingSurvived = survived ? "1" : "0";
-      entryForm.dataset.pendingTime = elapsed.toFixed(1);
-    }
-
-    saveBest(finalScoreVal);
+    setPersonalBest(finalScoreVal);
     show(screenOver);
   }
 
-  // ---------- leaderboard storage ----------
-  function getBoard() {
+  // ---------- personal best (local, per-device) ----------
+  function getPersonalBest() {
+    try { return Number(localStorage.getItem(PERSONAL_BEST_KEY) || 0); } catch (e) { return 0; }
+  }
+  function setPersonalBest(s) {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) { return []; }
+      if (s > getPersonalBest()) localStorage.setItem(PERSONAL_BEST_KEY, String(s));
+    } catch (e) {}
   }
-  function setBoard(list) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch (e) {}
-  }
-  function getBest() {
-    const board = getBoard();
-    return board.length ? board[0].score : 0;
-  }
-  function saveBest(_s) { /* best is derived from board top entry via getBest() */ }
 
-  function saveScore() {
+  // ---------- global leaderboard (Firestore) ----------
+  async function saveScore() {
     const name = (nameInput.value.trim() || "PLAYER").toUpperCase().slice(0, 12);
     const scoreVal = Number(entryForm.dataset.pendingScore || 0);
     const survived = entryForm.dataset.pendingSurvived === "1";
     const timeVal = entryForm.dataset.pendingTime;
 
-    const board = getBoard();
-    board.push({ name, score: scoreVal, time: timeVal, survived, date: new Date().toLocaleDateString("id-ID") });
-    board.sort((a, b) => b.score - a.score);
-    board.splice(MAX_ENTRIES);
-    setBoard(board);
-
-    entryForm.classList.add("hidden");
-    updateHud();
-    renderBoard();
+    entryStatus.textContent = "Mengirim...";
+    entryStatus.className = "entry-status";
+    try {
+      await addDoc(leaderboardCol, {
+        name, score: scoreVal, time: timeVal, survived,
+        date: new Date().toLocaleDateString("id-ID"),
+        createdAt: serverTimestamp(),
+      });
+      entryForm.classList.add("hidden");
+    } catch (e) {
+      console.error(e);
+      entryStatus.textContent = "Gagal mengirim skor. Cek koneksi & konfigurasi Firebase.";
+      entryStatus.className = "entry-status error";
+    }
   }
 
-  function renderBoard() {
-    const board = getBoard();
-    boardList.innerHTML = "";
-    if (!board.length) {
-      const li = document.createElement("li");
-      li.className = "empty";
-      li.textContent = "Belum ada skor. Jadilah yang pertama!";
-      boardList.appendChild(li);
-      return;
+  async function renderBoard() {
+    boardList.innerHTML = `<li class="empty">Memuat leaderboard...</li>`;
+    try {
+      const q = query(leaderboardCol, orderBy("score", "desc"), limit(MAX_ENTRIES));
+      const snap = await getDocs(q);
+      boardList.innerHTML = "";
+      if (snap.empty) {
+        const li = document.createElement("li");
+        li.className = "empty";
+        li.textContent = "Belum ada skor. Jadilah yang pertama!";
+        boardList.appendChild(li);
+        return;
+      }
+      let i = 0;
+      snap.forEach((doc) => {
+        i++;
+        const entry = doc.data();
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="rank">${i}</span>
+          <span class="name">${escapeHtml(entry.name || "PLAYER")}${entry.survived ? " ★" : ""}</span>
+          <span class="pts">${entry.score}</span>
+        `;
+        boardList.appendChild(li);
+      });
+    } catch (e) {
+      console.error(e);
+      boardList.innerHTML = `<li class="empty">Gagal memuat leaderboard. Cek koneksi & konfigurasi Firebase.</li>`;
     }
-    board.forEach((entry, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <span class="rank">${i + 1}</span>
-        <span class="name">${escapeHtml(entry.name)}${entry.survived ? " ★" : ""}</span>
-        <span class="pts">${entry.score}</span>
-      `;
-      boardList.appendChild(li);
-    });
   }
 
   function escapeHtml(s) {
@@ -353,5 +371,5 @@
   }
 
   // ---------- init ----------
-  bestValEl.textContent = getBest();
+  bestValEl.textContent = getPersonalBest();
 })();
