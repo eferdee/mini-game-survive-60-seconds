@@ -1,60 +1,31 @@
-# SURVIVE 60 SECONDS
+# DODGE//60 — Cara Bermain
 
-Game survival mobile-first berbasis web. Bertahan hidup selama 60 detik sambil menghindari musuh yang terus berdatangan — jangan sampai keluar arena, dan jangan sampai tertangkap.
+Bertahan hidup selama 60 detik. Hindari musuh. Kejar posisi teratas di leaderboard.
 
-## Cara Menjalankan
+## Kontrol
 
-1. Pastikan tiga file ini ada dalam satu folder: `index.html`, `style.css`, `script.js`
-2. Buka `index.html` langsung di browser (double-click), atau host lewat static server apa pun (GitHub Pages, Netlify, dll)
-3. Butuh koneksi internet saat pertama dibuka (font diambil dari Google Fonts)
+**Geser jari (di HP) atau gerakkan mouse (di komputer)** di area permainan. Orb-mu otomatis mengikuti posisi jari/mouse, dan tidak akan pernah keluar dari arena — jadi fokus saja menghindar, tidak perlu khawatir kelewat batas.
 
-## Cara Main
+## Tujuan
 
-- **Geser jari (mobile) atau mouse (desktop)** di area permainan untuk menggerakkan orb — orb otomatis terkunci di dalam canvas, tidak bisa keluar arena
-- **Hindari musuh** (lingkaran magenta/oranye) yang datang dari segala arah — kena satu kali = game over
-- **Mepet musuh dari jarak dekat tanpa nabrak** memicu bonus **GRAZE (+15 poin)** — mekanik risk-and-reward buat ngejar skor tinggi
-- **Bertahan penuh 60 detik** = bonus **SURVIVOR (+200 poin)** dan ditandai bintang (★) di leaderboard
+Bertahan selama **60 detik** dari musuh (lingkaran magenta/oranye) yang terus berdatangan dari segala arah. Kena satu kali musuh = permainan berakhir.
 
-## Sistem Skor
+Musuh akan datang **makin sering dan makin cepat** seiring waktu berjalan — 10 detik pertama masih santai, tapi mendekati akhir permainan akan jauh lebih ramai dan menegangkan.
 
-| Sumber | Poin |
+## Cara Dapat Skor
+
+| Aksi | Poin |
 |---|---|
-| Waktu bertahan | 10 poin / detik |
-| Graze (nyerempet musuh) | +15 poin / graze |
-| Survive 60 detik penuh | +200 poin (bonus) |
+| Setiap detik bertahan | 10 poin |
+| **GRAZE** — nyerempet musuh dari jarak dekat tanpa kena | +15 poin |
+| Bertahan penuh 60 detik | +200 poin bonus |
+
+**Tips:** jangan cuma lari menjauh dari musuh — kalau berani mepet musuh dari jarak dekat (tanpa nabrak), kamu dapat bonus GRAZE. Semakin sering nge-graze, semakin tinggi skormu dibanding sekadar bertahan pasif.
 
 ## Leaderboard
 
-- Top 10 skor tertinggi disimpan **lokal di browser** pemain (`localStorage`), tidak perlu server/database
-- Kalau skor akhir masuk top 10, muncul form untuk isi nama (maks 12 karakter)
-- Leaderboard bisa diakses dari menu awal maupun layar game over
+Leaderboard di game ini **global** — satu papan skor yang sama untuk semua pemain, dari device manapun. Setelah permainan selesai (menang atau kalah), kamu bisa isi nama dan kirim skor untuk masuk ke leaderboard. Yang ditampilkan adalah 10 skor tertinggi sepanjang masa.
 
-## Difficulty Curve
+Pemain yang berhasil bertahan penuh 60 detik akan ditandai dengan bintang (★) di sebelah namanya di leaderboard.
 
-Musuh spawn makin sering dan makin cepat seiring waktu berjalan:
-- Interval spawn awal ~950ms, terus mengecil sampai batas minimum ~260ms
-- Kecepatan musuh naik bertahap dari waktu ke waktu
-- Setelah detik ke-30, ada peluang musuh spawn ganda dalam satu waktu
-
-Arah musuh diacak dengan sedikit bias ke posisi pemain saat spawn, lalu bergerak lurus (tidak mengejar/tracking) — supaya tetap adil dan bisa dihindari.
-
-## Struktur File
-
-```
-mini-game-survive-60-seconds/
-├── index.html   # struktur & layar (start, game over, leaderboard)
-├── style.css    # tema neon arcade, layout mobile-first
-├── script.js    # game loop, input, collision, leaderboard
-└── README.md
-```
-
-## Teknologi
-
-Vanilla HTML5 Canvas + CSS + JavaScript — tanpa framework, tanpa build step, tanpa dependency backend.
-
-## Kustomisasi Cepat
-
-Semua parameter utama gameplay ada di bagian atas `script.js`:
-- `GAME_LENGTH` — durasi permainan (detik)
-- `MAX_ENTRIES` — jumlah slot leaderboard
-- `spawnInterval(t)`, `enemySpeed(t)`, `enemyRadius(t)` — kurva kesulitan
+Skor pribadi terbaikmu juga selalu terlihat di HUD bagian "TERBAIK" di pojok kanan atas, sebagai patokan buat ngalahin diri sendiri di percobaan berikutnya.
