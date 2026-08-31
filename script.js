@@ -266,7 +266,7 @@ import { firebaseConfig, LEADERBOARD_COLLECTION } from "./firebase-config.js";
 
   function endGame(survived) {
     running = false;
-    overStatus.textContent = survived ? "SELAMAT — SURVIVOR!" : "TERTANGKAP";
+    overStatus.textContent = survived ? "SELAMAT — KAMU BERTAHAN!" : "KENA MUSUH";
     let finalScoreVal = score;
     if (survived) {
       finalScoreVal += 200; // survivor bonus

@@ -1,5 +1,3 @@
-// Isi dengan config project Firebase kamu sendiri.
-// Ambil dari: Firebase Console → Project Settings → General → "Your apps" → SDK setup and configuration
 export const firebaseConfig = {
   apiKey: "AIzaSyAqgVuEQo4rspHAXVXwP3kDlORYZTXVEoU",
   authDomain: "mini-game-survive-60-seconds.firebaseapp.com",
