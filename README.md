@@ -1,16 +1,13 @@
-# DODGE//60 — Cara Bermain
+# SURVIVE//60 — Cara Bermain
 
-Bertahan hidup selama 60 detik. Hindari musuh. Kejar posisi teratas di leaderboard.
+Tahan diri kamu tetap hidup selama 60 detik tanpa tersentuh musuh. Kejar posisi teratas di leaderboard.
 
-## Kontrol
+## Langkah Bermain
 
-**Geser jari (di HP) atau gerakkan mouse (di komputer)** di area permainan. Orb-mu otomatis mengikuti posisi jari/mouse, dan tidak akan pernah keluar dari arena — jadi fokus saja menghindar, tidak perlu khawatir kelewat batas.
-
-## Tujuan
-
-Bertahan selama **60 detik** dari musuh (lingkaran magenta/oranye) yang terus berdatangan dari segala arah. Kena satu kali musuh = permainan berakhir.
-
-Musuh akan datang **makin sering dan makin cepat** seiring waktu berjalan — 10 detik pertama masih santai, tapi mendekati akhir permainan akan jauh lebih ramai dan menegangkan.
+1. **Gerakkan orb-mu.** Geser jari di layar HP, atau gerakkan mouse di komputer, di area permainan. Orb otomatis mengikuti posisi jari/mouse-mu dan tidak akan pernah keluar arena — jadi kamu cukup fokus menghindar.
+2. **Hindari musuh.** Lingkaran magenta/oranye akan terus berdatangan dari segala arah. Kena satu kali saja = permainan langsung berakhir.
+3. **Bertahan sampai waktu habis.** Musuh akan datang makin sering dan makin cepat seiring waktu berjalan — 10 detik pertama masih santai, tapi menjelang akhir permainan akan jauh lebih ramai dan menegangkan.
+4. **Menang jika bertahan penuh 60 detik.**
 
 ## Cara Dapat Skor
 
