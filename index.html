@@ -1,90 +1,380 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>Survive 60 Seconds — Bertahan 60 Detik</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+
+  <title>Survive 60 Seconds — Bertahan 60 Detik</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+
 <div class="app">
 
+  <!-- =====================================================
+       GAME HUD
+       ID & CLASS DIPERTAHANKAN
+  ====================================================== -->
+
   <header class="hud">
+
     <div class="hud-item">
-      <span class="hud-val" id="scoreVal">0</span>
       <span class="hud-label">SKOR</span>
+      <span class="hud-val" id="scoreVal">0</span>
     </div>
 
     <div class="hud-timer">
+
       <svg viewBox="0 0 100 100" class="timer-ring">
-        <circle class="timer-track" cx="50" cy="50" r="44"></circle>
-        <circle class="timer-fill" id="timerRing" cx="50" cy="50" r="44"></circle>
+        <circle
+          class="timer-track"
+          cx="50"
+          cy="50"
+          r="44">
+        </circle>
+
+        <circle
+          class="timer-fill"
+          id="timerRing"
+          cx="50"
+          cy="50"
+          r="44">
+        </circle>
       </svg>
-      <span class="timer-text" id="timerVal">60</span>
+
+      <div class="timer-content">
+        <span class="timer-text" id="timerVal">60</span>
+        <span class="timer-unit">SEC</span>
+      </div>
+
     </div>
 
     <div class="hud-item">
-      <span class="hud-val" id="bestVal">0</span>
       <span class="hud-label">TERBAIK</span>
+      <span class="hud-val" id="bestVal">0</span>
     </div>
+
   </header>
 
+
+  <!-- =====================================================
+       GAME STAGE
+  ====================================================== -->
+
   <main class="stage" id="stage">
+
     <canvas id="game"></canvas>
 
     <div class="popups" id="popups"></div>
 
-    <!-- START SCREEN -->
+
+    <!-- ===================================================
+         START SCREEN
+    ==================================================== -->
+
     <section class="overlay" id="screenStart">
-      <p class="eyebrow">SURVIVAL ARCADE</p>
-      <h1 class="logo">SURVIVE<span>//</span>60</h1>
-      <p class="tagline">Bertahan hidup selama 60 detik tanpa tersentuh musuh sekali pun.</p>
-      <div class="rules">
-        <div class="rule"><span class="rule-tag">1</span> Geser jari (HP) atau gerakkan mouse (PC) — orb-mu otomatis mengikuti</div>
-        <div class="rule"><span class="rule-tag">2</span> Jauhi lingkaran musuh yang berdatangan dari segala arah</div>
-        <div class="rule"><span class="rule-tag">3</span> Berani mepet musuh dari jarak dekat tanpa nabrak = bonus GRAZE</div>
-        <div class="rule"><span class="rule-tag">4</span> Kena musuh sekali saja = game berakhir. Bertahan penuh 60 detik = menang!</div>
+
+      <div class="start-content">
+
+        <p class="eyebrow">
+          SURVIVAL ARCADE
+        </p>
+
+        <h1 class="logo">
+          SURVIVE<span>//</span>60
+        </h1>
+
+        <p class="tagline">
+          Bertahan selama 60 detik.
+          <br>
+          Jangan sampai terkena musuh.
+        </p>
+
+
+        <!-- QUICK GAME GUIDE -->
+
+        <div class="rules">
+
+          <div class="rule">
+            <span class="rule-tag">01</span>
+
+            <div class="rule-content">
+              <strong>GERAK</strong>
+              <span>
+                Geser jari atau gerakkan mouse
+                untuk mengontrol orb.
+              </span>
+            </div>
+          </div>
+
+
+          <div class="rule">
+            <span class="rule-tag">02</span>
+
+            <div class="rule-content">
+              <strong>HINDARI</strong>
+              <span>
+                Jauhi musuh yang datang
+                dari segala arah.
+              </span>
+            </div>
+          </div>
+
+
+          <div class="rule">
+            <span class="rule-tag">03</span>
+
+            <div class="rule-content">
+              <strong>GRAZE</strong>
+              <span>
+                Semakin dekat tanpa terkena,
+                semakin besar bonus.
+              </span>
+            </div>
+          </div>
+
+
+          <div class="rule">
+            <span class="rule-tag">04</span>
+
+            <div class="rule-content">
+              <strong>SURVIVE</strong>
+              <span>
+                Terkena sekali = game berakhir.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- PRIMARY ACTION -->
+
+        <div class="start-actions">
+
+          <button
+            class="btn btn-primary"
+            id="btnStart"
+            type="button">
+            MULAI
+          </button>
+
+          <button
+            class="btn btn-ghost"
+            id="btnShowBoard"
+            type="button">
+            LEADERBOARD
+          </button>
+
+        </div>
+
+
+        <p class="control-hint">
+          <span>◉</span>
+          Geser / mouse untuk mengontrol orb
+        </p>
+
       </div>
-      <button class="btn btn-primary" id="btnStart">MULAI</button>
-      <button class="btn btn-ghost" id="btnShowBoard">LEADERBOARD</button>
+
     </section>
 
-    <!-- GAME OVER SCREEN -->
-    <section class="overlay hidden" id="screenOver">
-      <p class="eyebrow" id="overStatus">TERTANGKAP</p>
-      <h2 class="result-score" id="finalScore">0</h2>
-      <p class="result-sub" id="finalSub">Waktu bertahan: 0.0s</p>
 
-      <div class="entry-form" id="entryForm">
-        <p class="entry-hint">Kirim skormu ke leaderboard global:</p>
-        <input class="name-input" id="nameInput" maxlength="12" placeholder="NAMA" autocomplete="off" />
-        <button class="btn btn-primary" id="btnSaveScore">KIRIM SKOR</button>
-        <p class="entry-status" id="entryStatus"></p>
+    <!-- ===================================================
+         GAME OVER SCREEN
+    ==================================================== -->
+
+    <section
+      class="overlay hidden"
+      id="screenOver">
+
+      <div class="result-content">
+
+        <p
+          class="eyebrow"
+          id="overStatus">
+          TERTANGKAP
+        </p>
+
+
+        <div class="result-main">
+
+          <span class="result-label">
+            SCORE
+          </span>
+
+          <h2
+            class="result-score"
+            id="finalScore">
+            0
+          </h2>
+
+          <p
+            class="result-sub"
+            id="finalSub">
+            Waktu bertahan: 0.0s
+          </p>
+
+        </div>
+
+
+        <!-- SCORE SUBMISSION -->
+
+        <div
+          class="entry-form"
+          id="entryForm">
+
+          <p class="entry-hint">
+            SIMPAN SKORMU
+          </p>
+
+          <label
+            for="nameInput"
+            class="input-label">
+            NAMA PEMAIN
+          </label>
+
+          <input
+            class="name-input"
+            id="nameInput"
+            maxlength="12"
+            placeholder="MASUKKAN NAMA"
+            autocomplete="off"
+          />
+
+          <p class="input-limit">
+            Maks. 12 karakter
+          </p>
+
+          <button
+            class="btn btn-primary"
+            id="btnSaveScore"
+            type="button">
+            KIRIM SKOR
+          </button>
+
+          <p
+            class="entry-status"
+            id="entryStatus">
+          </p>
+
+        </div>
+
+
+        <!-- GAME OVER ACTIONS -->
+
+        <div
+          class="over-actions"
+          id="overActions">
+
+          <button
+            class="btn btn-primary"
+            id="btnRetry"
+            type="button">
+            COBA LAGI
+          </button>
+
+          <button
+            class="btn btn-ghost"
+            id="btnOverBoard"
+            type="button">
+            LEADERBOARD
+          </button>
+
+        </div>
+
       </div>
 
-      <div class="over-actions" id="overActions">
-        <button class="btn btn-primary" id="btnRetry">COBA LAGI</button>
-        <button class="btn btn-ghost" id="btnOverBoard">LEADERBOARD</button>
-      </div>
     </section>
 
-    <!-- LEADERBOARD SCREEN -->
-    <section class="overlay hidden" id="screenBoard">
-      <p class="eyebrow">GLOBAL · TOP 10</p>
-      <h2 class="board-title">LEADERBOARD</h2>
-      <ol class="board-list" id="boardList"></ol>
-      <button class="btn btn-ghost" id="btnBoardRefresh">MUAT ULANG</button>
-      <button class="btn btn-primary" id="btnBoardBack">KEMBALI</button>
+
+    <!-- ===================================================
+         LEADERBOARD SCREEN
+    ==================================================== -->
+
+    <section
+      class="overlay hidden"
+      id="screenBoard">
+
+      <div class="board-content">
+
+        <p class="eyebrow">
+          GLOBAL · TOP 10
+        </p>
+
+        <h2 class="board-title">
+          LEADERBOARD
+        </h2>
+
+        <p class="board-subtitle">
+          Siapa yang mampu bertahan paling lama?
+        </p>
+
+
+        <!--
+          JANGAN DIUBAH.
+
+          boardList kemungkinan diisi oleh
+          script.js secara dinamis.
+        -->
+
+        <ol
+          class="board-list"
+          id="boardList">
+        </ol>
+
+
+        <div class="board-actions">
+
+          <button
+            class="btn btn-ghost"
+            id="btnBoardRefresh"
+            type="button">
+            MUAT ULANG
+          </button>
+
+          <button
+            class="btn btn-primary"
+            id="btnBoardBack"
+            type="button">
+            KEMBALI
+          </button>
+
+        </div>
+
+      </div>
+
     </section>
 
   </main>
 
-  <footer class="hint">Geser jari / mouse di area permainan untuk menggerakkan orb-mu</footer>
+
+  <!-- =====================================================
+       GAME CONTROL HINT
+  ====================================================== -->
+
+  <footer class="hint">
+    <span>◉</span>
+    Geser jari / mouse di area permainan untuk menggerakkan orb
+  </footer>
+
 </div>
 
+
 <script type="module" src="script.js"></script>
+
 </body>
 </html>
