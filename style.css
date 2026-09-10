@@ -100,9 +100,14 @@ html, body{
 
 .timer-text{
   position:absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 16px;
+  line-height: 1;
+  text-align: center;
 }
 
 /* ---------- STAGE ---------- */
